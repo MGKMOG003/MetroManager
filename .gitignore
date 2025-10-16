@@ -1,0 +1,17 @@
+﻿.vs/
+bin/
+obj/
+*.db
+*.sqlite
+*.log
+*.user
+*.suo
+*.pdb
+*.cache
+*.tmp
+appsettings.Development.json
+wwwroot/lib/
+wwwroot/node_modules/
+.env
+metro.db
+app_data/

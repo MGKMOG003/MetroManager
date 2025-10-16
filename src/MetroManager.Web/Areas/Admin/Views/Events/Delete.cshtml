@@ -1,0 +1,13 @@
+﻿@model MetroManager.Domain.Entities.Event
+@{
+    ViewData["Title"] = "Delete Event";
+}
+<div class="container my-4">
+    <h2>Delete Event</h2>
+    <div class="alert alert-warning">Are you sure you want to delete <strong>@Model.Title</strong>?</div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button class="btn btn-danger" type="submit">Delete</button>
+        <a class="btn btn-secondary" href="@Url.Action("Index")">Cancel</a>
+    </form>
+</div>

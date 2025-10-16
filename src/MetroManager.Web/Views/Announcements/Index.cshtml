@@ -1,0 +1,46 @@
+﻿@model System.Collections.Generic.List<MetroManager.Web.ViewModels.AnnouncementVm>
+@{
+    ViewData["Title"] = "Announcements";
+}
+
+<div class="container my-4">
+    <h1 class="mb-3">Announcements</h1>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">No announcements available.</div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+            @foreach (var a in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        @if (!string.IsNullOrWhiteSpace(a.MediaUrl))
+                        {
+                            <img src="@a.MediaUrl" class="card-img-top" alt="@a.Title" />
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">@a.Title</h5>
+                            <div class="small text-muted">@a.Category • @a.PublishedUtc.ToLocalTime().ToString("dd MMM yyyy HH:mm")</div>
+                            @if (!string.IsNullOrWhiteSpace(a.Summary))
+                            {
+                                <p class="mt-2">@a.Summary</p>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(a.Body))
+                            {
+                                <p class="mt-2">@((a.Body.Length > 200) ? a.Body.Substring(0, 200) + "..." : a.Body)</p>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(a.Link))
+                            {
+                                <a href="@a.Link" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Open</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

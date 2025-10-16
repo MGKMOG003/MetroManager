@@ -1,0 +1,216 @@
+﻿@model MetroManager.Web.ViewModels.Admin.Issues.AdminIssueIndexVm
+@using MetroManager.Domain.Enums
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+@{
+    ViewData["Title"] = "Issues";
+    var anti = Xsrf.GetAndStoreTokens(Context);
+    var requestToken = anti.RequestToken;
+}
+
+<h1 class="mb-3">Issues</h1>
+
+@if (TempData["Ok"] is string ok)
+{
+    <div class="alert alert-success">@ok</div>
+}
+
+<form method="get" class="row g-2 mb-2">
+    <div class="col-auto">
+        <select name="status" class="form-select">
+            <option value="">All statuses</option>
+            @foreach (IssueStatus st in Enum.GetValues(typeof(IssueStatus)))
+            {
+                <option value="@((int)st)" selected="@(Model.FilterStatus == (int)st ? "selected" : null)">@st</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <input name="search" value="@Model.Search" class="form-control" placeholder="Search (ID, text, category)" />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary" type="submit">Filter</button>
+        <a class="btn btn-outline-secondary" href="@Url.Action("Index")">Reset</a>
+    </div>
+</form>
+
+<!-- Bulk toolbar -->
+<div class="d-flex align-items-center gap-2 mb-2">
+    <div class="form-check ms-1">
+        <input class="form-check-input" type="checkbox" id="selectAll" />
+        <label class="form-check-label" for="selectAll">Select all on page</label>
+    </div>
+
+    <div class="ms-3">
+        <select id="bulkStatus" class="form-select form-select-sm">
+            <option value="">Change status to…</option>
+            @foreach (IssueStatus st in Enum.GetValues(typeof(IssueStatus)))
+            {
+                <option value="@((int)st)">@st</option>
+            }
+        </select>
+    </div>
+    <button id="applyBulk" class="btn btn-sm btn-outline-primary">Apply</button>
+
+    <button id="bulkDelete" class="btn btn-sm btn-outline-danger ms-2">Delete selected</button>
+
+    <span class="ms-auto small text-muted"><strong id="selCount">0</strong> selected · showing @Model.Items.Count of @Model.TotalCount</span>
+</div>
+
+<form id="bulkForm" method="post" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<table class="table table-sm table-hover align-middle" id="issuesTable">
+    <thead>
+        <tr>
+            <th style="width:32px;"></th>
+            <th>Tracking ID</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Created</th>
+            <th>Status</th>
+            <th width="220">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var it in Model.Items)
+        {
+            <tr data-id="@it.Id">
+                <td>
+                    <input type="checkbox" class="form-check-input js-select" value="@it.Id" />
+                </td>
+                <td><strong>@it.PublicId</strong></td>
+                <td>@it.Category @(string.IsNullOrWhiteSpace(it.Subcategory) ? "" : $"→ {it.Subcategory}")</td>
+                <td>@it.LocationText</td>
+                <td>@it.CreatedUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@Html.Partial("_StatusBadge", it.Status)</td>
+                <td class="d-flex gap-1">
+                    <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Edit", new { id = it.Id })">Edit</a>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Set Status</button>
+                        <ul class="dropdown-menu">
+                            @foreach (IssueStatus st in Enum.GetValues(typeof(IssueStatus)))
+                            {
+                                <li><a class="dropdown-item js-status" href="#" data-status="@((int)st)">@st</a></li>
+                            }
+                        </ul>
+                    </div>
+                    <form asp-action="Delete" asp-route-id="@it.Id" method="post" onsubmit="return confirm('Delete this issue?');">
+                        @Html.AntiForgeryToken()
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr class="table-light">
+                <td></td>
+                <td colspan="6"><small>@it.DescriptionShort</small></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<nav aria-label="Pages">
+    <ul class="pagination">
+        <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Index", new { status = Model.FilterStatus, search = Model.Search, page = Model.Page - 1 })">Prev</a>
+        </li>
+        @for (int p = 1; p <= Model.TotalPages; p++)
+        {
+            <li class="page-item @(p == Model.Page ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { status = Model.FilterStatus, search = Model.Search, page = p })">@p</a>
+            </li>
+        }
+        <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Index", new { status = Model.FilterStatus, search = Model.Search, page = Model.Page + 1 })">Next</a>
+        </li>
+    </ul>
+</nav>
+
+@section Scripts {
+    <script>
+        (function(){
+            const token = '@requestToken';
+            const $selAll = document.getElementById('selectAll');
+            const $checks = () => Array.from(document.querySelectorAll('.js-select'));
+            const $selCount = document.getElementById('selCount');
+
+            function updateSelCount(){
+                $selCount.textContent = $checks().filter(c => c.checked).length;
+            }
+
+            $selAll.addEventListener('change', () => {
+                $checks().forEach(c => c.checked = $selAll.checked);
+                updateSelCount();
+            });
+            document.addEventListener('change', (e) => {
+                if (e.target && e.target.classList.contains('js-select')) updateSelCount();
+            });
+
+            // per-row status
+            document.querySelectorAll('.js-status').forEach(a => {
+                a.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const row = e.target.closest('tr[data-id]');
+                    const id = row?.getAttribute('data-id');
+                    const status = e.target.getAttribute('data-status');
+                    const notes = prompt('Optional admin note to accompany status change:', '');
+                    if (!id) return;
+
+                    const res = await fetch('@Url.Action("UpdateStatus")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: new URLSearchParams({ id, status, notes })
+                    });
+
+                    if (res.ok) location.reload();
+                    else alert('Failed to update status.');
+                });
+            });
+
+            // bulk status
+            document.getElementById('applyBulk').addEventListener('click', async (e) => {
+                e.preventDefault();
+                const ids = $checks().filter(c => c.checked).map(c => c.value);
+                const status = document.getElementById('bulkStatus').value;
+                if (ids.length === 0 || !status) { alert('Select ticket(s) and a status.'); return; }
+
+                const form = document.getElementById('bulkForm');
+                form.action = '@Url.Action("BulkStatus")';
+                form.method = 'POST';
+                const data = new URLSearchParams();
+                data.append('ids', ids.join(','));
+                data.append('status', status);
+                data.append('notes', prompt('Optional admin note for all selected:', '') || '');
+                await fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': token },
+                    body: data
+                });
+                location.reload();
+            });
+
+            // bulk delete
+            document.getElementById('bulkDelete').addEventListener('click', async (e) => {
+                e.preventDefault();
+                const ids = $checks().filter(c => c.checked).map(c => c.value);
+                if (ids.length === 0) { alert('Select ticket(s) to delete.'); return; }
+                if (!confirm(`Delete ${ids.length} ticket(s)? This cannot be undone.`)) return;
+
+                const form = document.getElementById('bulkForm');
+                const data = new URLSearchParams();
+                data.append('ids', ids.join(','));
+                await fetch('@Url.Action("BulkDelete")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': token },
+                    body: data
+                });
+                location.reload();
+            });
+        })();
+    </script>
+}

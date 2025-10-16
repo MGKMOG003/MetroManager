@@ -1,0 +1,46 @@
+﻿@model MetroManager.Web.ViewModels.Events.EventsIndexVm
+
+<form method="get" action="/events" class="card shadow-sm mb-3">
+    <div class="card-body">
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-6">
+                <label class="form-label mb-1">Categories</label>
+                <div class="row row-cols-2 row-cols-md-3 g-2">
+                    @foreach (var cat in Model.AvailableCategories)
+                    {
+                        var isChecked = Model.Filters.Categories?.Any(c =>
+                        string.Equals(c, cat, System.StringComparison.OrdinalIgnoreCase)) == true;
+
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       id="cat_@cat.Replace(" ", "_")"
+                                       name="Categories" value="@cat" @(isChecked ? "checked" : null) />
+                                <label class="form-check-label small" for="cat_@cat.Replace(" ", "_")">
+                                    @cat
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <label class="form-label mb-1" for="fromDate">From</label>
+                <input class="form-control" id="fromDate" name="From" type="date"
+                       value="@(Model.Filters.From.HasValue? Model.Filters.From.Value.ToString("yyyy-MM-dd") : "")" />
+            </div>
+
+            <div class="col-6 col-md-3">
+                <label class="form-label mb-1" for="toDate">To</label>
+                <input class="form-control" id="toDate" name="To" type="date"
+                       value="@(Model.Filters.To.HasValue? Model.Filters.To.Value.ToString("yyyy-MM-dd") : "")" />
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a class="btn btn-outline-secondary" href="/events">Clear</a>
+            </div>
+        </div>
+    </div>
+</form>

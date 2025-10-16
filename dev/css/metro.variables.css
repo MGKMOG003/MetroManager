@@ -1,0 +1,63 @@
+:root {
+  /* Brand palette */
+  --navy-950:#071025; --navy-900:#0B1D39; --navy-800:#12264A; --navy:#133057;
+  --sky-50:#EEF6FF;   --sky-100:#D8ECFF;  --sky-200:#BEE0FF;  --sky-300:#A6D4FF;
+  --orange-50:#FFF3E6;--orange-400:#FF8A3D;--orange-500:#FF7A1A;--orange-600:#E66B10;
+  --beige-50:#F7F3EE; --beige-100:#EFE8DF; --beige-200:#E6DDD1;
+
+  /* Neutrals */
+  --gray-50:#FAFAFC; --gray-100:#F2F4F7; --gray-200:#E4E7EC; --gray-300:#D0D5DD;
+  --gray-400:#98A2B3; --gray-500:#667085; --gray-600:#475467; --gray-700:#344054;
+  --gray-800:#1D2939; --gray-900:#0B1324;
+
+  /* Semantic */
+  --success-500:#16A34A; --warning-500:#D97706; --danger-500:#DC2626; --info-500:#2563EB;
+
+  /* Backgrounds */
+  --bg-app: var(--beige-50);
+  --bg-surface: #FFFFFF;
+  --bg-hero: var(--sky-50);
+  --bg-muted: var(--gray-50);
+
+  /* Text */
+  --text-main: var(--navy-900);
+  --text-muted: var(--gray-600);
+  --text-inverse: #FFFFFF;
+  --link: #0F67D0; --link-hover:#0B56AE;
+
+  /* Borders & effects */
+  --border: var(--gray-200);
+  --radius-sm:.5rem; --radius:.875rem; --radius-lg:1.25rem; --radius-xl:1.75rem; --radius-2xl:2rem;
+  --shadow-sm: 0 1px 2px rgba(16,24,40,.06);
+  --shadow:    0 4px 12px rgba(16,24,40,.08);
+  --shadow-lg: 0 10px 24px rgba(16,24,40,.12);
+  --focus: 0 0 0 3px rgba(37,99,235,.25);
+
+  /* Spacing scale (4px base) */
+  --space-0:0; --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem;
+  --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem; --space-12:3rem;
+  --space-16:4rem; --space-20:5rem; --space-24:6rem;
+
+  /* Typography */
+  --font-sans: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Type scale */
+  --fs-xs:.75rem; --fs-sm:.875rem; --fs-md:1rem; --fs-lg:1.125rem;
+  --fs-xl:1.25rem; --fs-2xl:1.5rem; --fs-3xl:1.875rem; --fs-4xl:2.25rem;
+
+  /* Transitions & z */
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --speed-1: 150ms; --speed-2: 250ms; --speed-3: 350ms;
+  --z-nav:1000; --z-modal:1100; --z-toast:1200;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-app:#0C1220; --bg-surface:#111827; --bg-hero:#0E172A;
+    --text-main:#E5E7EB; --text-muted:#A1A1AA; --border:#1F2937;
+    --link:#60A5FA; --link-hover:#93C5FD;
+    --shadow-sm:none; --shadow:none; --shadow-lg:none; /* flatter in dark */
+  }
+}

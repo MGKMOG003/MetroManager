@@ -1,0 +1,23 @@
+/* Minimal modern reset */
+* { box-sizing: border-box; }
+html:focus-within { scroll-behavior:smooth; }
+html, body { height:100%; }
+body {
+  margin:0; background:var(--bg-app); color:var(--text-main);
+  font-family:var(--font-sans); font-size:var(--fs-md); line-height:1.6;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+img, picture, video, canvas, svg { display:block; max-width:100%; }
+input, button, textarea, select { font:inherit; color:inherit; }
+a { color:var(--link); text-decoration: none; }
+a:hover { color:var(--link-hover); text-decoration: underline; }
+:focus-visible { outline: none; box-shadow: var(--focus); border-radius: .35rem; }
+
+/* Headings */
+h1,h2,h3,h4 { margin:0 0 var(--space-3); font-weight:700; line-height:1.2; }
+h1 { font-size:var(--fs-4xl); letter-spacing:-.02em; }
+h2 { font-size:var(--fs-3xl); }
+h3 { font-size:var(--fs-2xl); }
+h4 { font-size:var(--fs-xl); }
+p { margin:0 0 var(--space-4); color:var(--text-main); }
+small, .muted { color:var(--text-muted); font-size:var(--fs-sm); }

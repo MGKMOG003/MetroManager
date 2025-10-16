@@ -1,0 +1,7 @@
+@media print {
+  * { box-shadow:none !important; text-shadow:none !important; }
+  a, a:visited { text-decoration: underline; }
+  .header, .footer, .hero, .btn, .nav { display:none !important; }
+  .surface, .card { border:1px solid #000 !important; }
+  body { background:#fff; color:#000; }
+}

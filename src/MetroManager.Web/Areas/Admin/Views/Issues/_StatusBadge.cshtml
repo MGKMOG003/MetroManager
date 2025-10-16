@@ -1,0 +1,13 @@
+﻿@model MetroManager.Domain.Enums.IssueStatus
+@{
+    var (cls, text) = Model switch
+    {
+        MetroManager.Domain.Enums.IssueStatus.New => ("bg-secondary", "New"),
+        MetroManager.Domain.Enums.IssueStatus.Acknowledged => ("bg-info", "Acknowledged"),
+        MetroManager.Domain.Enums.IssueStatus.InProgress => ("bg-warning text-dark", "In Progress"),
+        MetroManager.Domain.Enums.IssueStatus.Resolved => ("bg-success", "Resolved"),
+        MetroManager.Domain.Enums.IssueStatus.Rejected => ("bg-danger", "Rejected"),
+        _ => ("bg-secondary", Model.ToString())
+    };
+}
+<span class="badge @cls">@text</span>

@@ -1,0 +1,64 @@
+﻿@model MetroManager.Web.ViewModels.Dashboard.ClientDashboardVm
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="mb-3 p-3 bg-light border rounded">
+    <h4 class="m-0">Welcome, <strong>@Model.DisplayName</strong> 🎉</h4>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="m-0">My Reports</h5>
+    <a class="btn btn-sm btn-primary" asp-controller="Issue" asp-action="Create">New Report</a>
+</div>
+
+<div class="table-responsive mb-4">
+    <table class="table table-sm table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Ref</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.MyReports)
+            {
+                <tr>
+                    <td>@r.Id</td>
+                    <td>@(r.GetType().GetProperty("Title")?.GetValue(r) ?? "(no title)")</td>
+                    <td>@(r.GetType().GetProperty("Category")?.GetValue(r) ?? "-")</td>
+                    <td>@(r.GetType().GetProperty("Status")?.GetValue(r) ?? "-")</td>
+                    <td class="text-nowrap">
+                        <button class="btn btn-sm btn-outline-secondary" disabled title="Editing disabled in this build">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" disabled title="Deletion disabled in this build">Delete</button>
+                    </td>
+                </tr>
+            }
+            @if (!Model.MyReports.Any())
+            {
+                <tr><td colspan="5" class="text-muted">You haven’t submitted any reports yet.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h5 class="mb-2">Announcements</h5>
+<div class="list-group">
+    @foreach (var a in Model.Announcements)
+    {
+        <div class="list-group-item">
+            <strong>@(a.GetType().GetProperty("Title")?.GetValue(a) ?? "Announcement")</strong>
+            <div class="small text-muted">
+                @(a.GetType().GetProperty("PublishedUtc")?.GetValue(a) as DateTime? ?? default(DateTime))
+            </div>
+            <div>@(a.GetType().GetProperty("Summary")?.GetValue(a) ?? "")</div>
+        </div>
+    }
+    @if (!Model.Announcements.Any())
+    {
+        <div class="list-group-item text-muted">No announcements yet.</div>
+    }
+</div>

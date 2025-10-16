@@ -1,0 +1,80 @@
+﻿@model MetroManager.Web.ViewModels.Events.EventDetailsVm
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container my-4">
+    <a class="btn btn-link mb-3" href="@Url.Action("Index", "Events")">&laquo; Back to Events</a>
+
+    <div class="row g-3">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                @if (!string.IsNullOrWhiteSpace(Model.MediaUrl))
+                {
+                    <img class="card-img-top" src="@Model.MediaUrl" alt="@Model.Title" />
+                }
+                <div class="card-body">
+                    <h1 class="h4 card-title">@Model.Title</h1>
+                    <div class="text-muted small mb-2">
+                        @Model.Category &middot;
+                        @Model.StartsOn.ToLocalTime().ToString("ddd, dd MMM yyyy HH:mm")
+                        @if (Model.EndsOn.HasValue)
+                        {
+                            <span>– @Model.EndsOn.Value.ToLocalTime().ToString("HH:mm")</span>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Venue) || !string.IsNullOrWhiteSpace(Model.City))
+                    {
+                        <div class="small mb-2">
+                            <i class="bi bi-geo-alt"></i>
+                            @(string.Join(", ", new[] { Model.Venue, Model.City }.Where(s => !string.IsNullOrWhiteSpace(s))))
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.LocationAddress))
+                    {
+                        <div class="small text-muted mb-2">@Model.LocationAddress</div>
+                    }
+
+                    @if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+                    {
+                        <div class="ratio ratio-16x9 my-3">
+                            <iframe src="https://maps.google.com/maps?q=@Model.Latitude,@Model.Longitude&z=15&output=embed"
+                                    width="600" height="450" style="border:0;" loading="lazy"></iframe>
+                        </div>
+                    }
+
+                    <p class="mt-3">@Model.Description</p>
+
+                    @if (Model.EntryPrice.HasValue || !string.IsNullOrWhiteSpace(Model.AgeRestriction))
+                    {
+                        <div class="small text-muted mb-2">
+                            @if (Model.EntryPrice.HasValue)
+                            {
+                                <span>Entry: @Model.EntryPrice.Value.ToString("C")</span>
+                            }
+                            @if (Model.EntryPrice.HasValue && !string.IsNullOrWhiteSpace(Model.AgeRestriction))
+                            {
+                                <span> &middot; </span>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.AgeRestriction))
+                            {
+                                <span>@Model.AgeRestriction</span>
+                            }
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Url))
+                    {
+                        <a class="btn btn-sm btn-outline-primary" href="@Model.Url" target="_blank" rel="noopener">Event website</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- optional sidebar -->
+        </div>
+    </div>
+</div>

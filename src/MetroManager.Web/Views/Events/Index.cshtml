@@ -1,0 +1,51 @@
+﻿@model MetroManager.Web.ViewModels.Events.EventsIndexVm
+@{
+    ViewData["Title"] = "Local Events & Announcements";
+}
+
+<div class="container my-4">
+    <h1 class="h3 mb-3">Local Events & Announcements</h1>
+
+    @await Html.PartialAsync("~/Views/Shared/_FilterBar.cshtml", Model)
+
+    <div class="row g-3">
+        <div class="col-lg-8">
+            @if (Model.Events == null || Model.Events.Count == 0)
+            {
+                <div class="alert alert-info">
+                    No events match your filters. Try different dates or categories.
+                </div>
+            }
+            else
+            {
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    @foreach (var e in Model.Events)
+                    {
+                        <div class="col">
+                            @await Html.PartialAsync("~/Views/Events/_EventCard.cshtml", e)
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            @if (Model.ShowRecommendations && Model.Recommendations.Count > 0)
+            {
+                @await Html.PartialAsync("~/Views/Shared/_Recommendations.cshtml", Model.Recommendations)
+            }
+            else
+            {
+                <div class="card shadow-sm">
+                    <div class="card-header">Personalized recommendations</div>
+                    <div class="card-body">
+                        <p class="small text-muted mb-2">
+                            Sign in to get event recommendations based on your searches and views.
+                        </p>
+                        <a class="btn btn-sm btn-primary" href="/Identity/Account/Login">Sign in</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

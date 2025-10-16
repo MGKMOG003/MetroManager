@@ -1,0 +1,28 @@
+﻿@@model System.Collections.Generic.List<MetroManager.Domain.Entities.Event>
+@{
+    ViewData["Title"] = "Manage Events";
+}
+    <div class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Events</h2>
+            <a class="btn btn-primary" href="@Url.Action("Create")">New Event</a>
+        </div>
+        <table class="table table-striped">
+            <thead><tr><th>Title</th><th>Category</th><th>Starts</th><th>Venue</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var e in Model)
+                {
+                    <tr>
+                        <td>@e.Title</td>
+                        <td>@e.Category</td>
+                        <td>@e.StartsOn.ToLocalTime()</td>
+                        <td>@e.Venue</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-secondary" href="@Url.Action("Edit", new { id = e.Id })">Edit</a>
+                            <a class="btn btn-sm btn-outline-danger" href="@Url.Action("Delete", new { id = e.Id })">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>

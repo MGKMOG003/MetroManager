@@ -1,0 +1,11 @@
+﻿@model MetroManager.Domain.Entities.Event
+@{ ViewData["Title"] = "Edit Event"; }
+<div class="container my-4">
+    <h2>Edit Event</h2>
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+        <partial name="_EventForm" model="Model" />
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a class="btn btn-secondary" href="@Url.Action("Index")">Cancel</a>
+    </form>
+</div>

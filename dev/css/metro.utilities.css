@@ -1,0 +1,27 @@
+/* Layout */
+.container { width: min(1100px, 92vw); margin-inline:auto; }
+.row { display:flex; flex-wrap:wrap; gap:var(--space-4); }
+.col { flex:1 1 0; min-width: 260px; }
+
+/* Spacing helpers (subset) */
+.mt-4{margin-top:var(--space-4);} .mb-4{margin-bottom:var(--space-4);}
+.p-4{padding:var(--space-4);} .p-6{padding:var(--space-6);} .px-4{padding-inline:var(--space-4);}
+
+/* Flex & grid */
+.flex{display:flex;} .center{justify-content:center; align-items:center;}
+.grid-2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--space-6);}
+.grid-3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--space-6);}
+@media (max-width: 900px){ .grid-3{grid-template-columns:1fr 1fr;} }
+@media (max-width: 640px){ .grid-2,.grid-3{grid-template-columns:1fr;} }
+
+/* Text */
+.text-center{text-align:center;} .text-right{text-align:right;}
+.lead { font-size: var(--fs-lg); color: var(--gray-700); }
+
+/* Surfaces */
+.surface { background:var(--bg-surface); border:1px solid var(--border);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow); }
+
+/* Hide-only-visually (for a11y labels) */
+.visually-hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden;
+  clip:rect(1px,1px,1px,1px); white-space:nowrap; }

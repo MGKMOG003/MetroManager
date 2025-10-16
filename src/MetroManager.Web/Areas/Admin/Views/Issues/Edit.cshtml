@@ -1,0 +1,67 @@
+﻿@model MetroManager.Web.ViewModels.Admin.Issues.AdminIssueEditVm
+@using MetroManager.Domain.Enums
+@{
+    ViewData["Title"] = $"Edit Issue {Model.PublicId}";
+}
+<h1 class="mb-3">Edit Issue <small class="text-muted">@Model.PublicId</small></h1>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label">Category</label>
+            <input asp-for="Category" class="form-control" />
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Subcategory</label>
+            <input asp-for="Subcategory" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Status</label>
+            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<IssueStatus>()"></select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Location</label>
+            <input asp-for="LocationText" class="form-control" />
+            <span asp-validation-for="LocationText" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Location Link</label>
+            <input asp-for="LocationLink" class="form-control" placeholder="https://maps.google.com/..." />
+            <span asp-validation-for="LocationLink" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Latitude</label>
+            <input asp-for="Latitude" class="form-control" />
+            <span asp-validation-for="Latitude" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Longitude</label>
+            <input asp-for="Longitude" class="form-control" />
+            <span asp-validation-for="Longitude" class="text-danger"></span>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Admin Notes</label>
+            <textarea asp-for="AdminNotes" class="form-control" rows="3" placeholder="Internal notes (not shown to citizen)"></textarea>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Save</button>
+            <a class="btn btn-outline-secondary" href="@Url.Action("Index")">Back</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

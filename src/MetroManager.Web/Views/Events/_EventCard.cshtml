@@ -1,0 +1,46 @@
+﻿@model MetroManager.Web.ViewModels.Events.EventCardVm
+
+<div class="card h-100 shadow-sm">
+    @if (!string.IsNullOrWhiteSpace(Model.MediaUrl))
+    {
+        <img class="card-img-top" src="@Model.MediaUrl" alt="@Model.Title" />
+    }
+    <div class="card-body d-flex flex-column">
+        <h2 class="h6 card-title mb-1">@Model.Title</h2>
+        <div class="text-muted small mb-2">
+            <span>@Model.Category</span> &middot;
+            <span>@Model.StartsOn.ToLocalTime().ToString("ddd, dd MMM yyyy HH:mm")</span>
+            @if (Model.EndsOn.HasValue)
+            {
+                <span>– @Model.EndsOn.Value.ToLocalTime().ToString("HH:mm")</span>
+            }
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.Venue) || !string.IsNullOrWhiteSpace(Model.City))
+        {
+            <div class="small mb-2">
+                <i class="bi bi-geo-alt"></i>
+                @(string.Join(", ", new[] { Model.Venue, Model.City }.Where(s => !string.IsNullOrWhiteSpace(s))))
+            </div>
+        }
+        @if (Model.EntryPrice.HasValue || !string.IsNullOrWhiteSpace(Model.AgeRestriction))
+        {
+            <div class="small text-muted mb-2">
+                @if (Model.EntryPrice.HasValue)
+                {
+                    <span>Entry: @Model.EntryPrice.Value.ToString("C")</span>
+                }
+                @if (Model.EntryPrice.HasValue && !string.IsNullOrWhiteSpace(Model.AgeRestriction))
+                {
+                    <span> &middot; </span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.AgeRestriction))
+                {
+                    <span>@Model.AgeRestriction</span>
+                }
+            </div>
+        }
+        <div class="mt-auto">
+            <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Details", "Events", new { id = Model.Id })">View details</a>
+        </div>
+    </div>
+</div>

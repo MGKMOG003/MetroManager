@@ -1,0 +1,24 @@
+﻿@model IEnumerable<MetroManager.Web.ViewModels.Events.EventCardVm>
+
+<div class="card shadow-sm">
+    <div class="card-header">Recommended for you</div>
+    <ul class="list-group list-group-flush">
+        @foreach (var r in Model)
+        {
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <div class="me-2">
+                        <div class="fw-semibold">@r.Title</div>
+                        <div class="small text-muted">
+                            @r.Category &middot; @r.StartsOn.ToLocalTime().ToString("dd MMM HH:mm")
+                        </div>
+                    </div>
+                    <div>
+                        <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Details", "Events", new { id = r.Id })">Open</a>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+

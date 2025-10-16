@@ -1,0 +1,52 @@
+﻿@model IEnumerable<MetroManager.Web.ViewModels.Dtos.IssueDto>
+@{
+    ViewData["Title"] = "My Service Requests";
+}
+<div class="container py-3">
+    <h1 class="mb-3">Welcome @User.Identity?.Name</h1>
+
+    <div class="d-flex mb-3">
+        <a asp-controller="Issue" asp-action="Create" class="btn btn-primary me-2">Create new issue</a>
+        <a class="btn btn-outline-secondary" href="#" onclick="alert('Closing tickets just updates status to Closed.');return false;">How closing works</a>
+    </div>
+
+    <div class="card p-3">
+        <h2 class="h5">Your open issues</h2>
+        <table class="table table-sm align-middle">
+            @* inside the table row where you list MyReports *@
+            <form asp-controller="Issue" asp-action="Retract" asp-route-id="@@r.Id" method="post" class="d-inline"
+                  onsubmit="return confirm('Retract this ticket? This will remove it.');">
+                @Html.AntiForgeryToken()
+                <button class="btn btn-sm btn-outline-danger" type="submit">Retract</button>
+            </form>
+
+            <thead><tr><th>Reference</th><th>Category</th><th>Submitted</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var i in Model)
+                {
+                    <tr>
+                        <td>@i.PublicId</td>
+                        <td>
+                            @i.Category
+                            @if (!string.IsNullOrWhiteSpace(i.Subcategory))
+                            {
+                                <span class="text-muted">/ @i.Subcategory</span>
+                            }
+                        </td>
+                        <td>@i.CreatedUtc.ToLocalTime()</td>
+                        <td>@i.Status</td>
+                        <td>
+                            @if (!string.Equals(i.Status, "Closed", System.StringComparison.OrdinalIgnoreCase))
+                            {
+                                <form asp-action="Close" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@i.Id" />
+                                    <button class="btn btn-sm btn-outline-danger">Close ticket</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

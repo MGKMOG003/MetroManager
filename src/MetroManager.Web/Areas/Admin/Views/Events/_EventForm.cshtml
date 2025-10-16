@@ -1,0 +1,64 @@
+﻿@model MetroManager.Domain.Entities.Event
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        <label class="form-label">Title</label>
+        <input class="form-control" asp-for="Title" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Category</label>
+        <input class="form-control" asp-for="Category" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Starts On (UTC)</label>
+        <input class="form-control" asp-for="StartsOn" type="datetime-local" value="@Model.StartsOn.ToString("yyyy-MM-ddTHH:mm")" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Ends On (UTC)</label>
+        <input class="form-control" asp-for="EndsOn" type="datetime-local" value="@(Model.EndsOn?.ToString("yyyy-MM-ddTHH:mm"))" />
+    </div>
+    <div class="col-12">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" asp-for="Description" rows="4"></textarea>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Venue</label>
+        <input class="form-control" asp-for="Venue" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">City</label>
+        <input class="form-control" asp-for="City" />
+    </div>
+    <div class="col-md-8">
+        <label class="form-label">Location Address</label>
+        <input class="form-control" asp-for="LocationAddress" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Latitude</label>
+        <input class="form-control" asp-for="Latitude" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Longitude</label>
+        <input class="form-control" asp-for="Longitude" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Entry Price</label>
+        <input class="form-control" asp-for="EntryPrice" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Age Restriction</label>
+        <input class="form-control" asp-for="AgeRestriction" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Media URL</label>
+        <input class="form-control" asp-for="MediaUrl" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Tags CSV</label>
+        <input class="form-control" asp-for="TagsCsv" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">External URL</label>
+        <input class="form-control" asp-for="Url" />
+    </div>
+</div>
+

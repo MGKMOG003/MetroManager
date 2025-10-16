@@ -1,225 +1,218 @@
-﻿Perfect — since your MetroManager app now builds and runs correctly (including seeding, admin dashboard, client registration, and events/announcements), here’s a full **updated `README.md`** suitable for your repo root.
+﻿# MetroManager
+
+A demo municipal services web app built with **ASP.NET Core 8**, **Entity Framework Core (SQLite)**, and **Identity**.
+
+It lets citizens submit service tickets, browse announcements and local events, and gives admins a dashboard to manage it all.
+
+[![.NET CI](https://github.com/MGKMG003/MetroManager/actions/workflows/dotnet.yml/badge.svg)](https://github.com/MGKMG003/MetroManager/actions/workflows/dotnet.yml)
 
 ---
 
-```markdown
-# MetroManager – Municipal Services Web Application
+## Contents
 
-A secure ASP.NET Core 8 MVC web application for citizens and municipal administrators to report, track, and manage local service issues, community events, and announcements.
-
----
-
-## 🚀 Overview
-
-**MetroManager** enables citizens to submit municipal service requests and view updates, while administrators manage issues, announcements, and community events from a unified dashboard.
-
-This project is part of the **INSY7314 / APDS7311 POE 2025** assignment, demonstrating secure, modern web app design with authentication, authorization, seeding, and data management features.
-
----
-
-## 🧩 Features
-
-### **Citizen (Client)**
-- Register and log in securely via Identity.
-- Create and manage service issue reports.
-- View announcement updates and upcoming events.
-- Access a personal dashboard to track open and closed issues.
-
-### **Administrator**
-- Log in via seeded admin credentials.
-- Manage:
-  - **Tickets / Issues**
-  - **Announcements**
-  - **Local Events**
-- Perform bulk actions (update status, delete multiple).
-- View metrics (total tickets, events, announcements).
-
-### **System**
-- Secure password hashing & role-based access.
-- Entity Framework Core 8 (SQLite provider).
-- Automatic database migrations on startup.
-- Data seeding for:
-  - Admin user & roles (`Admin`, `Client`)
-  - Mock announcements (2)
-  - Mock events (3)
-- Responsive Bootstrap 5 front-end.
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Database & Migrations](#database--migrations)
+- [Seed Data](#seed-data)
+- [Running](#running)
+- [Key URLs](#key-urls)
+- [Admin Dashboard](#admin-dashboard)
+- [Client Dashboard](#client-dashboard)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## 🧠 Architecture
+## Tech Stack
 
-**Solution Structure**
-
-```
-
-src/
-├── MetroManager.Domain/           # Domain models & enums
-├── MetroManager.Application/      # Application services, interfaces
-├── MetroManager.Infrastructure/   # EF Core DbContext, repositories, seeding
-├── MetroManager.Web/              # ASP.NET Core MVC + Razor UI
-└── MetroManager.Tests/            # Unit tests
-
-````
-
-**Tech Stack**
-
-| Layer | Technology |
-|-------|-------------|
-| Backend | ASP.NET Core 8 MVC |
-| ORM | Entity Framework Core 8 (SQLite) |
-| Authentication | ASP.NET Core Identity |
-| Frontend | Bootstrap 5, Razor Pages |
-| Logging | Microsoft.Extensions.Logging |
-| Build | .NET 8 SDK |
+- **.NET 8** (ASP.NET Core MVC + Razor Pages)
+- **Entity Framework Core** (SQLite provider)
+- **Identity** with roles: `Admin`, `Client`
+- Bootstrap 5 UI
 
 ---
 
-## ⚙️ Setup Instructions
+## Project Structure
 
-### 1. **Prerequisites**
-- [.NET 8 SDK](https://dotnet.microsoft.com/download)
-- Visual Studio 2022 or VS Code
-- SQLite (included in EF Core provider)
+MetroManager/
+├─ src/
+│ ├─ MetroManager.Domain/ # Entities & enums
+│ ├─ MetroManager.Application/ # Application services & abstractions
+│ ├─ MetroManager.Infrastructure/ # EF Core DbContext, repositories, migrations
+│ └─ MetroManager.Web/ # MVC app (controllers, views, Identity, seeding)
+├─ docs/ # Optional docs
+├─ dev/ # Dev scripts/snippets (optional)
+├─ MetroManager.sln
+├─ LICENSE
+└─ README.md
 
-### 2. **Clone the Repository**
-```bash
-git clone https://github.com/<your-org-or-user>/MetroManager.git
-cd MetroManager
-````
+yaml
+Copy code
 
-### 3. **Clean & Restore**
+SQLite database file lives at:
 
-```bash
-dotnet clean
+src/MetroManager.Web/metro.db
+
+yaml
+Copy code
+
+---
+
+## Getting Started
+
+Prereqs:
+
+- [.NET SDK 8.x](https://dotnet.microsoft.com/en-us/download)
+- (Optional) EF CLI tool for local migration commands:
+  ```powershell
+  dotnet tool update --global dotnet-ef
+Restore & build:
+
+powershell
+Copy code
 dotnet restore
-```
+dotnet build
+Run the web app:
 
-### 4. **Run EF Migrations**
+powershell
+Copy code
+dotnet run --project src/MetroManager.Web
+The app applies pending EF Core migrations automatically at startup.
 
-Rebuild the SQLite database and seed defaults:
+Database & Migrations
+This project uses SQLite. Connection string is Default in appsettings.json. By default the DB file is created under src/MetroManager.Web/metro.db.
 
-```bash
+Common EF commands (optional—startup already migrates):
+
+powershell
+Copy code
+# Add a migration in the Infrastructure project, using the Web app as startup
+dotnet ef migrations add <MigrationName> -p src/MetroManager.Infrastructure -s src/MetroManager.Web
+
+# Update the database
+dotnet ef database update -p src/MetroManager.Infrastructure -s src/MetroManager.Web
+If you ever change the DB file location, update the connection string accordingly.
+
+Seed Data
+On first run the app seeds:
+
+Roles: Admin, Client
+
+An admin user
+
+Sample announcements and events for the homepage and /events
+
+If you saw “Role CLIENT does not exist” before, it just means seeding hadn’t run. With the current Program startup it seeds on launch, so re-run the app and retry registration.
+
+Running
+powershell
+Copy code
+dotnet run --project src/MetroManager.Web
+Migrations are applied at startup.
+
+Seeders run (roles, admin, demo content) once when missing.
+
+Key URLs
+Home: /
+
+Login / Register: /Identity/Account/Login and /Identity/Account/Register
+
+Events listing: /events
+
+Admin dashboard: /Admin
+(Note: previously trying /Identity/Admin gave a 404; use /Admin.)
+
+Admin Dashboard
+The admin dashboard lets you manage:
+
+Tickets (filter, bulk status update, bulk delete)
+
+Announcements (list)
+
+Events (list)
+
+Tickets index view: /Admin/Tickets
+
+Bulk actions are CSRF-protected and available directly from the grid.
+
+Client Dashboard
+After registering/signing in as a Client, you’ll see:
+
+My Service Requests (close/retract, where enabled)
+
+Latest Announcements
+
+Clients can also submit new tickets: Dashboard → “New Report” or Home → Report Issue.
+
+Troubleshooting
+MSB3021 / MSB3027: file locked by another process
+Stop running processes and clean output:
+
+powershell
+Copy code
 taskkill /IM iisexpress.exe /F 2>$null
 taskkill /IM dotnet.exe /F 2>$null
 Remove-Item "src\MetroManager.Web\bin","src\MetroManager.Web\obj" -Recurse -Force -ErrorAction SilentlyContinue
-dotnet ef database update -p src/MetroManager.Infrastructure -s src/MetroManager.Web
-```
+dotnet build
+SQLite “duplicate column” during migration
+Your DB file already contains an older/partial schema. Remove the local DB and let the app recreate it:
 
-### 5. **Run the App**
-
-```bash
+powershell
+Copy code
+Remove-Item ".\src\MetroManager.Web\metro.db",".\app_data\metro.db",".\metro.db" -Force -ErrorAction SilentlyContinue
 dotnet run --project src/MetroManager.Web
-```
+Stale temp files accidentally added
+If odd files like View(new or w.Ignore(...) appear (copy/paste artifacts), remove them and commit again.
 
-Then open the browser at:
+Contributing
+Fork, create a feature branch
 
-```
-https://localhost:44355/
-```
+Make changes with tests where possible
 
----
+Submit a PR
 
-## 👥 Default Users
+License
+This project is licensed under the MIT License. See LICENSE for details.
 
-| Role              | Email                                           | Password     | Notes                  |
-| ----------------- | ----------------------------------------------- | ------------ | ---------------------- |
-| **Admin**         | [admin@metro.local](mailto:admin@metro.local)   | `Admin123!`  | Access Admin Dashboard |
-| **Client (demo)** | [client@metro.local](mailto:client@metro.local) | `Client123!` | Create/view reports    |
-
----
-
-## 📦 Seeded Data
-
-| Type          | Count | Example                                                        |
-| ------------- | ----- | -------------------------------------------------------------- |
-| Announcements | 2     | “Scheduled Maintenance”, “Water Interruption Notice”           |
-| Events        | 3     | “Community Clean-up”, “Safety Awareness Day”, “Public Meeting” |
-| Issues        | 0     | Created dynamically by users                                   |
-
-Seeding is handled in `IdentitySeedExtensions.SeedIdentityAsync()` and `DbInitializer.SeedDomainAsync()` during startup.
+yaml
+Copy code
 
 ---
 
-## 🖥️ Key Pages
+# GitHub Actions workflow (`.github/workflows/dotnet.yml`)
 
-| Area     | Path                         | Description                                    |
-| -------- | ---------------------------- | ---------------------------------------------- |
-| Public   | `/`                          | Home page with announcements & upcoming events |
-| Identity | `/Identity/Account/Register` | Client registration                            |
-| Client   | `/Dashboard`                 | Client issue tracking                          |
-| Admin    | `/Admin`                     | Admin overview dashboard                       |
-| Admin    | `/Admin/Tickets`             | Manage issue tickets                           |
-| Admin    | `/Admin/Announcements`       | Manage announcements                           |
-| Admin    | `/Admin/Events`              | Manage events                                  |
+```yaml
+name: .NET CI
 
----
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
 
-## 🔐 Security Features
+jobs:
+  build:
+    runs-on: windows-latest
 
-* HTTPS enforced
-* ASP.NET Core Identity (password hashing & salting)
-* Role-based authorization (`[Authorize(Roles="Admin")]`)
-* Anti-forgery tokens (`@Html.AntiForgeryToken()`)
-* Input sanitization and model validation
-* Separation of domain, infrastructure, and web layers
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
----
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
 
-## 🧪 Testing
+      - name: Restore
+        run: dotnet restore
 
-Run all unit tests:
+      - name: Build (Release)
+        run: dotnet build --configuration Release --no-restore
 
-```bash
-dotnet test
-```
+      - name: Test
+        run: dotnet test --configuration Release --no-build --verbosity normal
+This builds all projects and runs tests on every push/PR to master (or main if you switch).
 
----
-
-## 📁 Sample Configuration (`appsettings.json`)
-
-```json
-{
-  "ConnectionStrings": {
-    "Default": "Data Source=metro.db"
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning"
-    }
-  },
-  "AllowedHosts": "*"
-}
-```
-
----
-
-## 🏁 Current Build Status
-
-* ✅ EF Core schema in sync
-* ✅ Admin seeding & role setup
-* ✅ Client registration & redirect
-* ✅ Events & Announcements seeding and display
-* ✅ Admin dashboard functional
-
----
-
-## 📚 Authors
-
-**Katiso Mogaki**
-INSY7314 / APDS7311 – 2025
-Faculty of Information Technology
-Vaal University of Technology
-
----
-
-## 📄 License
-
-This project is released for educational purposes under the MIT License.
-
-```
-
----
-
-Would you like me to tailor the README for **academic submission** (with POE formatting and rubric mapping like “Task 2: Implementation Phase – Secure Portal Build”) or keep it as a **developer-oriented repo README** like above?
-```
